@@ -1,12 +1,26 @@
-﻿using System;
+﻿using Catalog_Service_Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Catalog_Service_Infrastructure
+namespace CatalogServiceInfrastructure
 {
-    public class UnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
+
+        public UnitOfWork(AppDbContext context)
+        {
+            Context = context;
+        }
+
+        public AppDbContext Context { get; }
+
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

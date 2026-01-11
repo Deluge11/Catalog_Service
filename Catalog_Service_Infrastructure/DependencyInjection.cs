@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Catalog_Service_Infrastructure
+namespace CatalogServiceInfrastructure
 {
     public static class DependencyInjection
     {

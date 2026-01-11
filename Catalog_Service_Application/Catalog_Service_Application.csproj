@@ -6,4 +6,26 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Categories\Commands\" />
+    <Folder Include="Categories\Queries\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Products\Commands\SetMainImageCommand\" />
+    <Folder Include="Products\Commands\UploadImageCommand\" />
+    <Folder Include="Products\Commands\UpdateProductCommand\" />
+    <Folder Include="Products\Commands\AddStockQuantityRequestCommand\" />
+    <Folder Include="Products\Commands\InsertProductCommand\" />
+    <Folder Include="Products\Queries\GetProductsByCurserQuery\" />
+    <Folder Include="Products\Queries\GetProductsByCurserForAllCategoriesQuery\" />
+    <Folder Include="Products\Queries\GetProductByIdQuery\" />
+    <Folder Include="Products\Queries\GetProductsByUserIdQuery\" />
+    <Folder Include="Products\Queries\GetImagesByProductIdQuery\" />
+    <Folder Include="Products\Queries\GetMyProductsQuery\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="14.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-using Catalog_Service_Infrastructure;
+using CatalogServiceInfrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
