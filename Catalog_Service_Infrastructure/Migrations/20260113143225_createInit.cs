@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CatalogServiceInfrastructure.Migrations
+namespace Catalog_Service_Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateInit : Migration
+    public partial class createInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatalogServiceInfrastructure
+namespace Catalog_Service_Infrastructure
 {
     public class AppDbContext : DbContext
     {

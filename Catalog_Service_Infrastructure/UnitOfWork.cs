@@ -1,11 +1,13 @@
-﻿using Catalog_Service_Core.Interfaces;
+﻿using Catalog_Service_Core.Entities;
+using Catalog_Service_Core.Interfaces;
+using Catalog_Service_Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatalogServiceInfrastructure
+namespace Catalog_Service_Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -13,14 +15,27 @@ namespace CatalogServiceInfrastructure
         public UnitOfWork(AppDbContext context)
         {
             Context = context;
+            Products = new ProductsRepository(context);
+            Categories = new BaseRepository<Category>(context);
+            ProductImages = new ProductImagesRepository(context);
         }
 
         public AppDbContext Context { get; }
 
+        public IProductRepository Products { get; }
 
-        public void Dispose()
+        public IBaseRepository<Category> Categories { get; }
+
+        public IProductImagesRepository ProductImages { get; }
+
+        public async Task<int> Complete()
         {
-            throw new NotImplementedException();
+            return await Context.SaveChangesAsync();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await Context.DisposeAsync();
         }
     }
 }

@@ -1,8 +1,12 @@
-using CatalogServiceInfrastructure;
+using Catalog_Service_Application;
+using Catalog_Service_Infrastructure;
+using Catalog_Service_API;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
+builder.Services.AddPresentation();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -14,7 +18,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

@@ -1,7 +1,9 @@
-﻿using Catalog_Service_Core.Entities;
+﻿using Catalog_Service_API.Extensions;
+using Catalog_Service_Core.DTOs;
+using Catalog_Service_Application.Products.Commands.InsertProduct;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security;
 
 namespace Catalog_Service_API.Controllers
 {
@@ -9,15 +11,17 @@ namespace Catalog_Service_API.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
-        public ProductsController()
-        {
+        public IMediator Mediator { get; }
 
+        public ProductsController(IMediator mediator)
+        {
+            Mediator = mediator;
         }
 
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetProductsByCurser([FromQuery] int categoryId, [FromQuery] int take, [FromQuery] int lastSeenId)
+        public async Task<IActionResult> GetProductsByCurserForOneCategory([FromQuery] int categoryId, [FromQuery] int take, [FromQuery] int lastSeenId)
         {
             return Ok();
         }
@@ -60,7 +64,6 @@ namespace Catalog_Service_API.Controllers
 
 
 
-        [Authorize]
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpGet("my-products")]
         public async Task<IActionResult> GetMyProducts()
@@ -71,30 +74,17 @@ namespace Catalog_Service_API.Controllers
 
 
 
-        [Authorize]
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpPost]
-        public async Task<IActionResult> InsertProduct()
+        public async Task<IActionResult> InsertProduct(InsertProductDTO ipDTO)
         {
-            //InsertProductRequest product
-            return Ok();
+            var result = await Mediator.Send(new InsertProductCommand(ipDTO, User.GetUserId()));
+            return result ? Ok() : BadRequest();
 
         }
 
 
 
-        [Authorize]
-        //[CheckPermission(Permission.Products_ManageOwnProduct)]
-        [HttpPost("add-quantity")]
-        public async Task<IActionResult> AddStockQuantityRequest()
-        {
-            //AddProductQuantity request
-            return Ok();
-        }
-
-
-
-        [Authorize]
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpPost("{productId}")]
         public async Task<ActionResult> UploadImage(List<IFormFile> images, int productId)
@@ -104,7 +94,6 @@ namespace Catalog_Service_API.Controllers
 
 
 
-        [Authorize]
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpPut]
         public async Task<ActionResult> UpdateProduct()
@@ -116,7 +105,6 @@ namespace Catalog_Service_API.Controllers
 
 
 
-        [Authorize]
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpPatch("image/{productId}")]
         public async Task<ActionResult> SetMainImage(int productId, [FromQuery] int imageId)

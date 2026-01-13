@@ -34,7 +34,6 @@ namespace Catalog_Service_API.Controllers
 
 
 
-        [Authorize]
         //[CheckPermission(Permission.Categories_ManageCategories)]
         [HttpPost("{name}")]
         public async Task<IActionResult> CreateCategory(string name)
@@ -43,7 +42,7 @@ namespace Catalog_Service_API.Controllers
         }
 
 
-        [Authorize]
+
         //[CheckPermission(Permission.Categories_ManageCategories)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromQuery] string name)

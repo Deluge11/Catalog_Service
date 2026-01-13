@@ -1,24 +1,79 @@
-﻿using Catalog_Service_Core.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using Catalog_Service_Core.Entities;
+using Catalog_Service_Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq;
-using System.Text;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace CatalogServiceInfrastructure.Repositories
+namespace Catalog_Service_Infrastructure.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-
+        private DbSet<T> Entity { get; set; }
         public BaseRepository(AppDbContext context)
         {
-            
+            Entity = context.Set<T>();
         }
 
-
-        public Task<T> Add(T entity)
+        public async Task<T> Add(T entity)
         {
+            await Entity.AddAsync(entity);
+            return entity;
+        }
 
+        public async Task<bool> Exists(Expression<Func<T, bool>> predicate)
+        {
+            return await Entity.AnyAsync(predicate);
+        }
+
+        public async Task<T> Find(Expression<Func<T, bool>> predicate)
+        {
+            return await Entity.SingleOrDefaultAsync(predicate);
+        }
+        public IEnumerable<T> GetEntityWithoutTraching()
+        {
+            return Entity.AsNoTracking();
+        }
+
+        public IEnumerable<T> FindIncludes(Expression<Func<T, bool>> match, string[] includes)
+        {
+            IQueryable<T> query = Entity;
+
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            return query.Where(match).ToList();
+        }
+
+        public IEnumerable<T> FindAllWithTracking(Expression<Func<T, bool>> predicate)
+        {
+            return Entity.Where(predicate);
+        }
+
+        public async Task<int> Count(Expression<Func<T, bool>> predicate)
+        {
+            return await Entity.CountAsync(predicate);
+        }
+
+        public async Task<T> GetById(int id)
+        {
+            return await Entity.FindAsync(id);
+        }
+
+        public Task<T> Single(Expression<Func<T, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> FindAllWithoutTracking(Expression<Func<T, bool>> predicate)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<T> IBaseRepository<T>.FindAllWithTracking(Expression<Func<T, bool>> predicate)
+        {
+            return FindAllWithTracking(predicate);
         }
     }
 }

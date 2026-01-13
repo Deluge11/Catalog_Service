@@ -9,9 +9,9 @@ namespace Catalog_Service_Core.Interfaces
 {
     public interface IUnitOfWork : IAsyncDisposable
     {
-        IBaseRepository<Product> Products { get; }
+        IProductRepository Products { get; }
         IBaseRepository<Category> Categories { get; }
-        IBaseRepository<ProductImage> ProductImages { get; }
+        IProductImagesRepository ProductImages { get; }
         Task<int> Complete();
     }
 }
