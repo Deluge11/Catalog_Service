@@ -1,7 +1,11 @@
-﻿using Catalog_Service_Core.Entities;
+﻿using Catalog_Service_Application.Categories.Commands.CreateCategory;
+using Catalog_Service_Application.Categories.Commands.UpdateCategory;
+using Catalog_Service_Application.Categories.Queries.GetAllCategories;
+using Catalog_Service_Application.Categories.Queries.GetCategoryById;
+using Catalog_Service_Core.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security;
 
 namespace Catalog_Service_API.Controllers
 {
@@ -9,9 +13,11 @@ namespace Catalog_Service_API.Controllers
     [Route("[controller]")]
     public class CategoryController : ControllerBase
     {
-        public CategoryController()
-        {
+        public IMediator Mediator { get; }
 
+        public CategoryController(IMediator mediator)
+        {
+            Mediator = mediator;
         }
 
 
@@ -20,7 +26,8 @@ namespace Catalog_Service_API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
-            return Ok();
+            var result = await Mediator.Send(new GetCategoryByIdQuery(id));
+            return result != null ? Ok(result) : NotFound();
         }
 
 
@@ -29,7 +36,8 @@ namespace Catalog_Service_API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            return Ok();
+            var result = await Mediator.Send(new GetAllCategoriesQuery());
+            return result.Any() ? Ok(result) : NotFound();
         }
 
 
@@ -38,7 +46,8 @@ namespace Catalog_Service_API.Controllers
         [HttpPost("{name}")]
         public async Task<IActionResult> CreateCategory(string name)
         {
-            return Ok();
+            var result = await Mediator.Send(new CreateCategoryCommand(name));
+            return result ? Ok(result) : BadRequest();
         }
 
 
@@ -47,7 +56,8 @@ namespace Catalog_Service_API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromQuery] string name)
         {
-            return Ok();
+            var result = await Mediator.Send(new UpdateCategoryCommand(id, name));
+            return result ? Ok(result) : BadRequest();
         }
 
     }

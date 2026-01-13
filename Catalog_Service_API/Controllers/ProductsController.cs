@@ -4,6 +4,18 @@ using Catalog_Service_Application.Products.Commands.InsertProduct;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Catalog_Service_Application.Categories.Queries.GetCategoryById;
+using Catalog_Service_Application.Products.Queries.GetProductsByCurserForOneCategory;
+using Catalog_Service_Core.Entities;
+using Catalog_Service_Application.Products.Queries.GetProductsByCurserForAllCategories;
+using Catalog_Service_Application.Products.Queries.GetProductById;
+using Catalog_Service_Application.Products.Queries.GetProductsByUserId;
+using Catalog_Service_Application.ProductImages.Queries.GetImagesByProductId;
+using Catalog_Service_Application.Products.Queries.GetMyProducts;
+using Catalog_Service_Application.ProductImages.Commands.UploadImage;
+using Catalog_Service_Application.Products.Commands.UpdateProduct;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Catalog_Service_Application.ProductImages.Commands.SetMainImage;
 
 namespace Catalog_Service_API.Controllers
 {
@@ -21,16 +33,18 @@ namespace Catalog_Service_API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetProductsByCurserForOneCategory([FromQuery] int categoryId, [FromQuery] int take, [FromQuery] int lastSeenId)
+        public async Task<IActionResult> GetProductsByCurserForOneCategory([FromQuery] int lastSeenId, [FromQuery] int categoryId)
         {
-            return Ok();
+            var result = await Mediator.Send(new GetProductsByCurserForOneCategoryQuery(lastSeenId, categoryId));
+            return result.Any() ? Ok(result) : NotFound();
         }
 
         [AllowAnonymous]
         [HttpGet("get-all-sections")]
         public async Task<IActionResult> GetProductsByCurserForAllCategories([FromQuery] int take, [FromQuery] int lastSeenId)
         {
-            return Ok();
+            var result = await Mediator.Send(new GetProductsByCurserForAllCategoriesQuery(lastSeenId));
+            return result.Any() ? Ok(result) : NotFound();
 
         }
 
@@ -38,18 +52,18 @@ namespace Catalog_Service_API.Controllers
         [HttpGet("{productId}")]
         public async Task<IActionResult> GetProductById(int productId)
         {
-            return Ok();
-
+            var result = await Mediator.Send(new GetProductByIdQuery(productId));
+            return result != null ? Ok(result) : NotFound();
         }
 
 
 
         [AllowAnonymous]
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetProductsByUserId(int userId)
+        public async Task<IActionResult> GetProductsByUserId(int userId, [FromQuery] int lastSeenId)
         {
-            return Ok();
-
+            var result = await Mediator.Send(new GetProductsByUserIdQuery(userId, lastSeenId));
+            return result.Any() ? Ok(result) : NotFound();
         }
 
 
@@ -58,18 +72,18 @@ namespace Catalog_Service_API.Controllers
         [HttpGet("images/{productId}")]
         public async Task<IActionResult> GetImagesByProductId(int productId)
         {
-            return Ok();
-
+            var result = await Mediator.Send(new GetImagesByProductIdQuery(productId));
+            return result.Any() ? Ok(result) : NotFound();
         }
 
 
 
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpGet("my-products")]
-        public async Task<IActionResult> GetMyProducts()
+        public async Task<IActionResult> GetMyProducts([FromQuery] int lastSeenId)
         {
-            return Ok();
-
+            var result = await Mediator.Send(new GetMyProductsQuery(User.GetUserId(), lastSeenId));
+            return result.Any() ? Ok(result) : NotFound();
         }
 
 
@@ -87,29 +101,30 @@ namespace Catalog_Service_API.Controllers
 
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpPost("{productId}")]
-        public async Task<ActionResult> UploadImage(List<IFormFile> images, int productId)
+        public async Task<IActionResult> UploadImage(IFormFile image, int productId)
         {
-            return Ok();
+            var result = await Mediator.Send(new UploadImageCommand(image,productId,User.GetUserId()));
+            return result ? NoContent() : BadRequest();
         }
 
 
 
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpPut]
-        public async Task<ActionResult> UpdateProduct()
+        public async Task<IActionResult> UpdateProduct(UpdateProductDTO upDTO)
         {
-            //UpdateProductRequest product
-            return Ok();
-
+            var result = await Mediator.Send(new UpdateProductCommand(upDTO,User.GetUserId()));
+            return result ? NoContent() : BadRequest();
         }
 
 
 
         //[CheckPermission(Permission.Products_ManageOwnProduct)]
         [HttpPatch("image/{productId}")]
-        public async Task<ActionResult> SetMainImage(int productId, [FromQuery] int imageId)
+        public async Task<IActionResult> SetMainImage(int productId, [FromQuery] int imageId)
         {
-            return Ok();
+            var result = await Mediator.Send(new SetMainImageCommand(productId,imageId,User.GetUserId()));
+            return result ? NoContent() : BadRequest();
         }
 
     }
