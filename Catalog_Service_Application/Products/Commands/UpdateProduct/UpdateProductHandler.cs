@@ -1,21 +1,20 @@
 ﻿using Catalog_Service_Core.Interfaces;
+using ConstantsLib.Events;
+using ConstantsLib.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Catalog_Service_Application.Products.Commands.UpdateProduct
 {
     public class UpdateProductHandler : IRequestHandler<UpdateProductCommand, bool>
     {
-        public UpdateProductHandler(IUnitOfWork unitOfWork)
+        public UpdateProductHandler(IUnitOfWork unitOfWork, IEventBus eventBus)
         {
             UnitOfWork = unitOfWork;
+            EventBus = eventBus;
         }
 
         public IUnitOfWork UnitOfWork { get; }
+        public IEventBus EventBus { get; }
 
         public async Task<bool> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
@@ -30,7 +29,22 @@ namespace Catalog_Service_Application.Products.Commands.UpdateProduct
             product.Price = request.upDTP.price;
             product.CategoryId = request.upDTP.categoryId;
 
-            return await UnitOfWork.Complete() > 0;
+            if (await UnitOfWork.Complete() == 0)
+            {
+                return false;
+            }
+
+            var productUpdatedEvent = new ProductUpdateEvent
+            {
+                ProductId = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Description = product.Description
+            };
+
+            await EventBus.Publish(productUpdatedEvent);
+
+            return true;
         }
     }
 }

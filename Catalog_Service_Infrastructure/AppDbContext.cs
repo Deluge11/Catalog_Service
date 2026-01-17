@@ -10,10 +10,7 @@ namespace Catalog_Service_Infrastructure
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions options) : base(options)
-        {
-
-        }
+        public AppDbContext(DbContextOptions options) : base(options) { }
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -36,15 +33,13 @@ namespace Catalog_Service_Infrastructure
                 .WithOne()
                 .HasForeignKey(pi => pi.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.MainImage)
-                .WithOne() 
+                .WithOne()
                 .HasForeignKey<Product>(p => p.ImageId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-        
         }
-
     }
 }

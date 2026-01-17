@@ -15,9 +15,11 @@ namespace Catalog_Service_Infrastructure
         public UnitOfWork(AppDbContext context)
         {
             Context = context;
+
             Products = new ProductsRepository(context);
             Categories = new BaseRepository<Category>(context);
             ProductImages = new ProductImagesRepository(context);
+            Users = new BaseRepository<User>(context);
         }
 
         public AppDbContext Context { get; }
@@ -27,6 +29,7 @@ namespace Catalog_Service_Infrastructure
         public IBaseRepository<Category> Categories { get; }
 
         public IProductImagesRepository ProductImages { get; }
+        public IBaseRepository<User> Users { get; }
 
         public async Task<int> Complete()
         {

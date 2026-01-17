@@ -27,7 +27,7 @@ namespace Catalog_Service_Infrastructure.Repositories
         {
             return await Entity.AnyAsync(predicate);
         }
-  
+
         public IEnumerable<T> FindIncludes(Expression<Func<T, bool>> match, string[] includes)
         {
             IQueryable<T> query = Entity;
@@ -48,9 +48,9 @@ namespace Catalog_Service_Infrastructure.Repositories
             return await Entity.FindAsync(id);
         }
 
-        public Task<T> Single(Expression<Func<T, bool>> predicate)
+        public async Task<T> Single(Expression<Func<T, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await Entity.SingleOrDefaultAsync(predicate);
         }
     }
 }

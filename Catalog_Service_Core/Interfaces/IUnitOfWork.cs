@@ -12,6 +12,7 @@ namespace Catalog_Service_Core.Interfaces
         IProductRepository Products { get; }
         IBaseRepository<Category> Categories { get; }
         IProductImagesRepository ProductImages { get; }
+        public IBaseRepository<User> Users { get; }
         Task<int> Complete();
     }
 }
