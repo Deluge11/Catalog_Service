@@ -39,6 +39,7 @@ namespace Catalog_Service_Application.Products.Commands.UpdateProduct
                 ProductId = product.Id,
                 Name = product.Name,
                 Price = product.Price,
+                UserId = product.UserId,
                 Description = product.Description
             };
 

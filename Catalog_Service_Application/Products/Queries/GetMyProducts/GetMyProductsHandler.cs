@@ -15,9 +15,10 @@ namespace Catalog_Service_Application.Products.Queries.GetMyProducts
 
         public async Task<IEnumerable<GetProductsCatalogDTO>> Handle(GetMyProductsQuery request, CancellationToken cancellationToken)
         {
+            bool getFirst = request.lastSeenId == 0 ? true : false;
             return await UnitOfWork.Products.GetProductsCatalog(p =>
             p.UserId == request.userId &&
-            (p.Id < request.lastSeenId || request.lastSeenId == 0));
+            (p.Id < request.lastSeenId || getFirst));
         }
     }
 }

@@ -27,20 +27,23 @@ namespace Catalog_Service_Application.ProductImages.Commands.UploadImage
                 return false;
             }
 
-            var imagePath = "mock-fileservice.uploadimage(request.image,productId)";
-            if (imagePath == null)
-            {
-                return false;
-            }
+            //var imagePath = "mock-fileservice.uploadimage(request.image,productId)";
+            //if (imagePath == null)
+            //{
+            //    return false;
+            //}
 
-            var productImage = new ProductImage
-            {
-                Path = imagePath,
-                ProductId = request.productId
-            };
+            ////Upload Image
 
-            await UnitOfWork.ProductImages.Add(productImage);
-            await UnitOfWork.Complete();
+            //var productImage = new ProductImage
+            //{
+            //    Path = imagePath,
+            //    ProductId = request.productId
+            //};
+
+            //await UnitOfWork.ProductImages.Add(productImage);
+            //await UnitOfWork.Complete();
+
             return true;
         }
     }

@@ -7,10 +7,10 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Catalog_Service_API.Controllers
+namespace Catalog_Service_API.Controllers.Public
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("public/[controller]")]
     public class CategoryController : ControllerBase
     {
         public IMediator Mediator { get; }
@@ -22,8 +22,7 @@ namespace Catalog_Service_API.Controllers
 
 
 
-        [AllowAnonymous]
-        [HttpGet("{id}")]
+        [HttpGet("get-by-id/{id}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             var result = await Mediator.Send(new GetCategoryByIdQuery(id));
@@ -31,34 +30,12 @@ namespace Catalog_Service_API.Controllers
         }
 
 
-
-        [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("get-all")]
         public async Task<IActionResult> GetAllCategories()
         {
             var result = await Mediator.Send(new GetAllCategoriesQuery());
             return result.Any() ? Ok(result) : NotFound();
         }
-
-
-
-        //[CheckPermission(Permission.Categories_ManageCategories)]
-        [HttpPost("{name}")]
-        public async Task<IActionResult> CreateCategory(string name)
-        {
-            var result = await Mediator.Send(new CreateCategoryCommand(name));
-            return result ? Ok(result) : BadRequest();
-        }
-
-
-
-        //[CheckPermission(Permission.Categories_ManageCategories)]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, [FromQuery] string name)
-        {
-            var result = await Mediator.Send(new UpdateCategoryCommand(id, name));
-            return result ? Ok(result) : BadRequest();
-        }
-
+      
     }
 }

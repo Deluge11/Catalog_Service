@@ -9,15 +9,14 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
-namespace Catalog_Service_Infrastructure.Messaging
+namespace Catalog_Service_Infrastructure.Messaging.Consumers
 {
-    public class NewUserEventConsumer : BackgroundService
+    public class UserCreatedEventConsumer : BackgroundService
     {
         private RabbitMqConnection RabbitMqConnection { get; }
         private IServiceProvider ServiceProvider { get; }
-        private IChannel? Channel { get; set; }
 
-        public NewUserEventConsumer(RabbitMqConnection rabbitMqConnection, IServiceProvider serviceProvider)
+        public UserCreatedEventConsumer(RabbitMqConnection rabbitMqConnection, IServiceProvider serviceProvider)
         {
             RabbitMqConnection = rabbitMqConnection;
             ServiceProvider = serviceProvider;
@@ -25,8 +24,8 @@ namespace Catalog_Service_Infrastructure.Messaging
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Channel = await RabbitMqConnection.CreateChannel();
-            var consumer = new AsyncEventingBasicConsumer(Channel);
+            var channel = await RabbitMqConnection.CreateChannel();
+            var consumer = new AsyncEventingBasicConsumer(channel);
 
             consumer.ReceivedAsync += async (obj, eventArgs) =>
             {
@@ -48,23 +47,23 @@ namespace Catalog_Service_Infrastructure.Messaging
                     if (await mediator.Send(new AddNewUserCommand(userCreatedEvent.UserId, userCreatedEvent.Name)))
                     {
                         Console.WriteLine($" [x] Message Ack Successfully: {message}");
-                        await Channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
+                        await channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
                     }
                     else
                     {
                         Console.WriteLine($"Error processing User Created Event");
-                        await Channel.BasicNackAsync(eventArgs.DeliveryTag, multiple: false, false);
+                        await channel.BasicNackAsync(eventArgs.DeliveryTag, multiple: false, false);
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error processing message: {ex.Message}");
-                    await Channel.BasicNackAsync(eventArgs.DeliveryTag, multiple: false, false);
+                    await channel.BasicNackAsync(eventArgs.DeliveryTag, multiple: false, false);
                 }
             };
 
-            await Channel.BasicConsumeAsync("catalog.queue.user.created", false, consumer, stoppingToken);
-            await Channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 10, global: false);
+            await channel.BasicConsumeAsync("catalog.queue.user.created", false, consumer, stoppingToken);
+            await channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 10, global: false);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Catalog_Service_API.Extensions
         public static int GetUserId(this ClaimsPrincipal user)
         {
             var value = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return int.TryParse(value, out int id) ? id : 1;
+            return int.TryParse(value, out int id) ? id : 53;
         }
     }
 }

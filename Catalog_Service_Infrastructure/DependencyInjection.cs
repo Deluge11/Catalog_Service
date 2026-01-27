@@ -1,5 +1,6 @@
 ﻿using Catalog_Service_Core.Interfaces;
 using Catalog_Service_Infrastructure.Messaging;
+using Catalog_Service_Infrastructure.Messaging.Consumers;
 using Catalog_Service_Infrastructure.Options;
 using ConstantsLib.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +21,10 @@ namespace Catalog_Service_Infrastructure
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
                 connectionString, b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
+            services.AddHostedService<RabbitMqInitializer>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddHostedService<RabbitMqInitializer>();
-            services.AddHostedService<NewUserEventConsumer>();
+            services.AddHostedService<UserCreatedEventConsumer>();
             services.AddScoped<IEventBus, RabbitMqPublisher>();
             services.AddSingleton<RabbitMqConnection>();
             services.AddSingleton<IConnectionFactory>(sp =>
