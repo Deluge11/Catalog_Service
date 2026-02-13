@@ -1,10 +1,8 @@
-﻿using Catalog_Service_Application.Categories.Commands.CreateCategory;
+﻿using Catalog_Service_API.Attributes;
+using Catalog_Service_Application.Categories.Commands.CreateCategory;
 using Catalog_Service_Application.Categories.Commands.UpdateCategory;
-using Catalog_Service_Application.Categories.Queries.GetAllCategories;
-using Catalog_Service_Application.Categories.Queries.GetCategoryById;
-using Catalog_Service_Core.Entities;
+using ConstantsLib.Enums;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog_Service_API.Controllers.Private
@@ -21,7 +19,7 @@ namespace Catalog_Service_API.Controllers.Private
         }
 
 
-        //[CheckPermission(Permission.Categories_ManageCategories)]
+        [CheckPermission(EnPermission.Categories_ManageCategories)]
         [HttpPost("add/{name}")]
         public async Task<IActionResult> CreateCategory(string name)
         {
@@ -30,7 +28,7 @@ namespace Catalog_Service_API.Controllers.Private
         }
 
 
-        //[CheckPermission(Permission.Categories_ManageCategories)]
+        [CheckPermission(EnPermission.Categories_ManageCategories)]
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromQuery] string name)
         {

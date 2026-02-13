@@ -22,7 +22,11 @@ namespace Catalog_Service_Infrastructure
 
             modelBuilder.Entity<User>()
                 .Property(u => u.Id)
-                .ValueGeneratedNever(); 
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<Category>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
 
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)

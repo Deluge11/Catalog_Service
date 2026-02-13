@@ -22,7 +22,7 @@ namespace Catalog_Service_Infrastructure.Repositories
         }
         public async Task<IEnumerable<GetProductsCatalogDTO>> GetProductsCatalog(Expression<Func<Product, bool>> predicate)
         {
-            var result = await Entity
+            return await Entity
                 .AsNoTracking()
                 .Where(predicate)
                 .OrderByDescending(p => p.Id)
@@ -33,8 +33,6 @@ namespace Catalog_Service_Infrastructure.Repositories
                     p.Price,
                     p.MainImage != null ? p.MainImage.Path : "default_image.jpg"))
                 .ToListAsync();
-
-            return result;
         }
 
         public async Task<IEnumerable<GetProductDetailsDTO>> GetProductsDetails(Expression<Func<Product, bool>> predicate)

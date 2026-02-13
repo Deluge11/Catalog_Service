@@ -15,6 +15,11 @@ namespace Catalog_Service_Application.Categories.Commands.CreateCategory
 
         public async Task<bool> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
+            bool isExists = await UnitOfWork.Categories.Exists(c => c.Name == request.name);
+
+            if (isExists)
+                return false;
+
             await UnitOfWork.Categories.Add(new Category { Name = request.name });
             return await UnitOfWork.Complete() != 0;
         }

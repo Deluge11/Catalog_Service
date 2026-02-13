@@ -3,14 +3,12 @@ using Catalog_Service_Core.DTOs;
 using Catalog_Service_Application.Products.Commands.InsertProduct;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Catalog_Service_Application.Products.Queries.GetProductsByCurserForOneCategory;
-using Catalog_Service_Application.Products.Queries.GetProductsByCurserForAllCategories;
-using Catalog_Service_Application.Products.Queries.GetProductById;
 using Catalog_Service_Application.Products.Queries.GetProductsByUserId;
-using Catalog_Service_Application.ProductImages.Queries.GetImagesByProductId;
 using Catalog_Service_Application.ProductImages.Commands.UploadImage;
 using Catalog_Service_Application.Products.Commands.UpdateProduct;
 using Catalog_Service_Application.ProductImages.Commands.SetMainImage;
+using ConstantsLib.Enums;
+using Catalog_Service_API.Attributes;
 
 namespace Catalog_Service_API.Controllers.Private
 {
@@ -27,16 +25,16 @@ namespace Catalog_Service_API.Controllers.Private
 
 
       
-        //[CheckPermission(Permission.Products_ManageOwnProduct)]
+        [CheckPermission(EnPermission.Products_ManageOwnProduct)]
         [HttpGet("my-products")]
         public async Task<IActionResult> GetMyProducts([FromQuery] int lastSeenId)
         {
             var result = await Mediator.Send(new GetProductsByUserIdQuery(User.GetUserId(), lastSeenId));
-            return result.Any() ? Ok(result) : NotFound();
+            return result.Any() ? Ok(result) : NoContent();
         }
 
 
-        //[CheckPermission(Permission.Products_ManageOwnProduct)]
+        [CheckPermission(EnPermission.Products_ManageOwnProduct)]
         [HttpPost]
         public async Task<IActionResult> InsertProduct(InsertProductDTO ipDTO)
         {
@@ -46,7 +44,7 @@ namespace Catalog_Service_API.Controllers.Private
         }
 
 
-        //[CheckPermission(Permission.Products_ManageOwnProduct)]
+        [CheckPermission(EnPermission.Products_ManageOwnProduct)]
         [HttpPost("{productId}")]
         public async Task<IActionResult> UploadImage(IFormFile image, int productId)
         {
@@ -56,7 +54,7 @@ namespace Catalog_Service_API.Controllers.Private
 
 
 
-        //[CheckPermission(Permission.Products_ManageOwnProduct)]
+        [CheckPermission(EnPermission.Products_ManageOwnProduct)]
         [HttpPut]
         public async Task<IActionResult> UpdateProduct(UpdateProductDTO upDTO)
         {
@@ -66,7 +64,7 @@ namespace Catalog_Service_API.Controllers.Private
 
 
 
-        //[CheckPermission(Permission.Products_ManageOwnProduct)]
+        [CheckPermission(EnPermission.Products_ManageOwnProduct)]
         [HttpPatch("image/{productId}")]
         public async Task<IActionResult> SetMainImage(int productId, [FromQuery] int imageId)
         {

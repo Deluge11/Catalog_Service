@@ -1,16 +1,10 @@
-﻿using Catalog_Service_API.Extensions;
-using Catalog_Service_Core.DTOs;
-using Catalog_Service_Application.Products.Commands.InsertProduct;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Catalog_Service_Application.Products.Queries.GetProductsByCurserForOneCategory;
 using Catalog_Service_Application.Products.Queries.GetProductsByCurserForAllCategories;
 using Catalog_Service_Application.Products.Queries.GetProductById;
 using Catalog_Service_Application.Products.Queries.GetProductsByUserId;
 using Catalog_Service_Application.ProductImages.Queries.GetImagesByProductId;
-using Catalog_Service_Application.ProductImages.Commands.UploadImage;
-using Catalog_Service_Application.Products.Commands.UpdateProduct;
-using Catalog_Service_Application.ProductImages.Commands.SetMainImage;
 
 namespace Catalog_Service_API.Controllers.Public
 {
